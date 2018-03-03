@@ -31,7 +31,8 @@
         "symfony/css-selector": "^4.0",
         "symfony/dotenv": "^4.0",
         "symfony/phpunit-bridge": "^4.0",
-        "symfony/profiler-pack": "*"
+        "symfony/profiler-pack": "*",
+        "symfony/web-server-bundle": "^4.0"
     },
     "config": {
         "preferred-install": {
@@ -75,6 +76,6 @@
             "id": "",
             "allow-contrib": false
         },
-        "symfony.id": "01C7P8JRC09N06BGT2EDNHNMFV"
+        "symfony.id": "01C7PQHD7QWTX1PYW9QQN2H43Q"
     }
 }
