@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PlayersRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Player
 {
@@ -55,7 +56,7 @@ class Player
     private $city;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="date")
      */
     private $birthday;
 
@@ -90,7 +91,7 @@ class Player
     private $last_day;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     private $created_at;
 
@@ -349,4 +350,12 @@ class Player
     {
         $this->created_at = $created_at;
     }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist() {
+        $this->created_at = new \DateTime("now");
+    }
+
 }

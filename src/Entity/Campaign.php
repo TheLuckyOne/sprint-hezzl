@@ -6,6 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CampaignRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Campaign
 {
@@ -25,7 +26,7 @@ class Campaign
     private $account;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Campaign")
+     * @ORM\ManyToOne(targetEntity="CampaignType")
      * @ORM\JoinColumn(nullable=false)
      */
     private $campaign_type;
@@ -46,7 +47,7 @@ class Campaign
     private $message_end;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     private $created_at;
 
@@ -160,6 +161,13 @@ class Campaign
     public function setCreatedAt($created_at): void
     {
         $this->created_at = $created_at;
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function onPrePersist() {
+        $this->created_at = new \DateTime("now");
     }
 
 }

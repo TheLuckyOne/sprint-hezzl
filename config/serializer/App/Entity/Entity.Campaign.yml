@@ -1,0 +1,15 @@
+App\Entity\Campaign:
+    exclusion_policy: ALL
+    properties:
+        id:
+            expose: true
+        campaign_type:
+            expose: true
+        name:
+            expose: true
+        custom_setting:
+            expose: true
+        message_end:
+            expose: true
+        cerated_at:
+            expose: true
