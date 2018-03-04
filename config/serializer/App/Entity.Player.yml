@@ -1,0 +1,31 @@
+App\Entity\Player:
+    exclusion_policy: ALL
+    properties:
+        campaign:
+            expose: true
+        login:
+            expose: true
+        name:
+            expose: true
+        email:
+            expose: true
+        phone:
+            expose: true
+        sex:
+            expose: true
+        birthday:
+            expose: true
+        company:
+            expose: true
+        job:
+            expose: true
+        score:
+            expose: true
+        coins:
+            expose: true
+        system:
+            expose: true
+        last_day:
+            expose: true
+        created_at:
+            expose: true

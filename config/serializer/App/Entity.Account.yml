@@ -1,15 +1,15 @@
-App\Entity\Campaign:
+App\Entity\Account:
     exclusion_policy: ALL
     properties:
-        id:
-            expose: true
-        campaign_type:
-            expose: true
         name:
             expose: true
-        custom_setting:
+        email:
             expose: true
-        message_end:
+        phone:
             expose: true
-        cerated_at:
+        system_field:
+            expose: true
+        type:
+            expose: true
+        created_at:
             expose: true

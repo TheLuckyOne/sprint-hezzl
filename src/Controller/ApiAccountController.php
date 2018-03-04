@@ -12,9 +12,29 @@ namespace App\Controller;
 use App\Entity\Account;
 use App\Entity\AccountType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class ApiAccountController extends RestController
 {
+
+    public function getAccountsAction(Request $request)
+    {
+        parent::checkSum();
+        //TODO
+
+        $id = $request->get('id');
+        if (!$id) {
+            throw new HttpException(503, 'Id is required');
+        }
+
+        $account = $this->container->get('doctrine')->getRepository(Account::class)->find($id);
+
+        if (!$account) {
+            throw new HttpException(503, 'Account not found');
+        }
+
+        return $this->view($account, 200);
+    }
 
     public function newAccountsAction(Request $request) {
         $serializer = $this->container->get('jms_serializer');
