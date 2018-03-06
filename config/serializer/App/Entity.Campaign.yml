@@ -5,6 +5,8 @@ App\Entity\Campaign:
             expose: true
         name:
             expose: true
+        login_type:
+            expose: true
         custom_setting:
             expose: true
         message_end:

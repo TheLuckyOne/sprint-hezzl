@@ -19,18 +19,15 @@ class ApiAccountController extends RestController
 
     public function getAccountsAction(Request $request)
     {
-        parent::checkSum();
-        //TODO
-
         $id = $request->get('id');
         if (!$id) {
-            throw new HttpException(503, 'Id is required');
+            throw new HttpException(500, 'Id is required');
         }
 
         $account = $this->container->get('doctrine')->getRepository(Account::class)->find($id);
 
         if (!$account) {
-            throw new HttpException(503, 'Account not found');
+            throw new HttpException(500, 'Account not found');
         }
 
         return $this->view($account, 200);

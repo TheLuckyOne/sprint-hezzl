@@ -31,11 +31,6 @@ class Player
     private $login;
 
     /**
-     * @ORM\Column(type="integer")
-     */
-    private $login_type;
-
-    /**
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -76,12 +71,12 @@ class Player
     private $job;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default": 0})
      */
     private $score;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default": 0})
      */
     private $coins;
 
@@ -91,7 +86,7 @@ class Player
     private $system;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime", nullable=true)
      */
     private $last_day;
 
@@ -146,22 +141,6 @@ class Player
     public function setLogin($login): void
     {
         $this->login = $login;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getLoginType()
-    {
-        return $this->login_type;
-    }
-
-    /**
-     * @param string $login_type
-     */
-    public function setLoginType($login_type): void
-    {
-        $this->login_type = $login_type;
     }
 
     /**

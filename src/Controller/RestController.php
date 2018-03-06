@@ -21,7 +21,7 @@ class RestController extends FOSRestController
      */
     public function checkSum() {
         //TODO
-        //throw new HttpException(503,'Checksum is failed');
+        //throw new HttpException(500,'Checksum is failed');
 
         return true;
     }

@@ -1,6 +1,10 @@
 snc_redis:
     clients:
-        default:
+        players_uids:
             type: predis
-            alias: default
+            alias: players_uids
             dsn: "%env(REDIS_URL)%"
+        players_operations_tokens:
+            type: predis
+            alias: players_operations_tokens
+            dsn: "%env(REDIS_URL_PLAYER_TOKENS)%"

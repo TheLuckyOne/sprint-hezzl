@@ -19,18 +19,15 @@ class ApiPlayerController extends RestController
 
     public function getPlayersAction(Request $request)
     {
-        parent::checkSum();
-        //TODO
-
         $id = $request->get('id');
         if (!$id) {
-            throw new HttpException(503, 'Id is required');
+            throw new HttpException(500, 'Id is required');
         }
 
         $player = $this->container->get('doctrine')->getRepository(Player::class)->find($id);
 
         if (!$player) {
-            throw new HttpException(503, 'Player not found');
+            throw new HttpException(500, 'Player not found');
         }
 
         return $this->view($player, 200);
