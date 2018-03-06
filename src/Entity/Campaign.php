@@ -37,6 +37,11 @@ class Campaign
     private $name;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $login_type;
+
+    /**
      * @ORM\Column(type="text")
      */
     private $custom_setting;
@@ -113,6 +118,22 @@ class Campaign
     public function setName($name): void
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getLoginType()
+    {
+        return $this->login_type;
+    }
+
+    /**
+     * @param string $login_type
+     */
+    public function setLoginType($login_type): void
+    {
+        $this->login_type = $login_type;
     }
 
     /**

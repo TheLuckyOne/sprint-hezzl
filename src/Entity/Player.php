@@ -31,6 +31,11 @@ class Player
     private $login;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $login_type;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -76,7 +81,7 @@ class Player
     private $score;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="integer")
      */
     private $coins;
 
@@ -141,6 +146,22 @@ class Player
     public function setLogin($login): void
     {
         $this->login = $login;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getLoginType()
+    {
+        return $this->login_type;
+    }
+
+    /**
+     * @param string $login_type
+     */
+    public function setLoginType($login_type): void
+    {
+        $this->login_type = $login_type;
     }
 
     /**
@@ -288,7 +309,7 @@ class Player
     }
 
     /**
-     * @return double
+     * @return integer
      */
     public function getCoins()
     {
@@ -296,7 +317,7 @@ class Player
     }
 
     /**
-     * @param double $coins
+     * @param integer $coins
      */
     public function setCoins($coins): void
     {

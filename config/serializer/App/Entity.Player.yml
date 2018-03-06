@@ -5,6 +5,8 @@ App\Entity\Player:
             expose: true
         login:
             expose: true
+        login_type:
+            expose: true
         name:
             expose: true
         email:
