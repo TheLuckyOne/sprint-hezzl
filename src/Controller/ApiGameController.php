@@ -195,6 +195,10 @@ class ApiGameController extends RestController
         }
 
         $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
+        if (!$player) {
+            throw new HttpException(500, 'Player did not found');
+        }
+
         $player->setScore($player->getScore() + $score);
 
         $em = $this->getDoctrine()->getManager();
@@ -228,6 +232,7 @@ class ApiGameController extends RestController
     {
         parent::checkSum();
 
+        //Скажу честно, я не успел придумать, как централизировать данный код. Поэтому да, копипасты много.
         $uid = $request->get('uid');
         if (!$uid) {
             throw new HttpException(500, 'Uid is required');
@@ -258,6 +263,10 @@ class ApiGameController extends RestController
         }
 
         $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
+        if (!$player) {
+            throw new HttpException(500, 'Player did not found');
+        }
+
         $player->setCoins($player->getCoins() + $coins);
 
         $em = $this->getDoctrine()->getManager();
@@ -279,6 +288,126 @@ class ApiGameController extends RestController
                 'coins' => $player->getCoins(),
             ],
             'operation_token' => $operation_token
+        ], 200);
+    }
+
+    /**
+     * @Route("/api/update_system", name="api_update_system", methods={"PUT"})
+     * @param Request $request
+     * @return \FOS\RestBundle\View\View
+     */
+    public function updateSystemAction(Request $request) {
+        parent::checkSum();
+
+        $uid = $request->get('uid');
+        if (!$uid) {
+            throw new HttpException(500, 'Uid is required');
+        }
+
+        $system = $request->get('system');
+        if (!$system) {
+            throw new HttpException(500, 'System is required');
+        }
+
+        $operation_token = $request->get('operation_token');
+        if (!$operation_token) {
+            throw new HttpException(500, 'Operation token is required');
+        }
+
+        $operation_token = $request->get('operation_token');
+        if (!$operation_token) {
+            throw new HttpException(500, 'Operation token is required');
+        }
+
+        $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
+        if (!$playerIdFromRedis) {
+            throw new HttpException(500, 'Uid is not valid');
+        }
+
+        $playerIdByOperationTokenFromRedis = $this->container->get('snc_redis.players_operations_tokens')->get($operation_token);
+        if (!$playerIdByOperationTokenFromRedis) {
+            throw new HttpException(500, 'Operation token is not valid');
+        }
+
+        if ($playerIdFromRedis != $playerIdByOperationTokenFromRedis) {
+            throw new HttpException(500, 'Operation token mismatch');
+        }
+
+        $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
+        if (!$player) {
+            throw new HttpException(500, 'Player did not found');
+        }
+
+        $player->setSystem($system);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($player);
+        $em->flush();
+
+        $this->container->get('snc_redis.players_operations_tokens')->del($operation_token);
+
+        try {
+            $operation_token = md5(random_bytes(20));
+        } catch (\Exception $e) {
+            throw new HttpException(500, 'Cannot get new tokens');
+        }
+
+        $this->container->get('snc_redis.players_operations_tokens')->set($operation_token, $player->getId());
+
+        return $this->view([
+            'data' => [
+                'coins' => $player->getCoins(),
+            ],
+            'operation_token' => $operation_token
+        ], 200);
+    }
+
+    /**
+     * @Route("/api/rating", name="api_rating", methods={"GET"})
+     * @param Request $request
+     * @return \FOS\RestBundle\View\View
+     */
+    public function ratingAction(Request $request)
+    {
+        parent::checkSum();
+
+        $uid = $request->get('uid');
+        if (!$uid) {
+            throw new HttpException(500, 'Uid is required');
+        }
+
+        $count = $request->get('count');
+        if (!$count) {
+            throw new HttpException(500, 'Count is required');
+        }
+
+        $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
+        if (!$playerIdFromRedis) {
+            throw new HttpException(500, 'Uid is not valid');
+        }
+
+        $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
+        if (!$player) {
+            throw new HttpException(500, 'Player did not found');
+        }
+
+        $top = $this->container->get('doctrine')->getRepository(Player::class)->findBy([], ['score' => 'DESC'], $count);
+        $top_result = [];
+        $pos = 0;
+        foreach ($top as $playerInTop) {
+            $top_result[] = [
+                'rank' => ++$pos,
+                'id' => $playerInTop->getId(),
+                'name' => $playerInTop->getName(),
+                'score' => $playerInTop->getScore(),
+                'current' => $playerInTop->getId() == $player->getId()
+            ];
+        }
+
+        return $this->view([
+            'data' => [
+                'top' => $top_result
+            ]
         ], 200);
     }
 
