@@ -125,7 +125,7 @@ class ApiAdminController extends RestController
             throw new HttpException(500, 'Password is required');
         }
 
-        $member = $this->container->get('doctrine')->getRepository(Member::class)->findBy(['email' => $email, 'password' => $password]);
+        $member = $this->container->get('doctrine')->getRepository(Member::class)->findBy(['email' => $email, 'password' => sha1($password)]);
         if (count($member) == 0) {
             throw new HttpException(500, 'Member not found');
         }
