@@ -85,7 +85,7 @@ class ApiGameController extends RestController
         //Указывать пароль при авторизации, видимо, тоже не надо.
 
         $player = $this->container->get('doctrine')->getRepository(Player::class)->findBy(['login' => $login, 'campaign' => $campaign->getId()]);
-        if (!$player) {
+        if ($player === null) {
             $name = $request->get('name');
             if ($name === null) {
                 throw new HttpException(500, 'Name is required');

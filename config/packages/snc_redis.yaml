@@ -6,5 +6,5 @@ snc_redis:
             dsn: "%env(REDIS_URL)%"
         players_operations_tokens:
             type: predis
-            alias: players_operations_tokens
+            alias: members_tokens
             dsn: "%env(REDIS_URL_PLAYER_TOKENS)%"

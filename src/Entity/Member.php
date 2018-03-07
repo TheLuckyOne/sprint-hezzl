@@ -123,6 +123,7 @@ class Member
      */
     public function setPassword($password): void
     {
+        //TODO: зашифровывать
         $this->password = $password;
     }
 

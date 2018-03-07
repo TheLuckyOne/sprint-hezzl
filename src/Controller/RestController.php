@@ -10,6 +10,7 @@ namespace App\Controller;
 
 
 use App\Entity\Campaign;
+use App\Entity\Member;
 use App\Entity\Player;
 use FOS\RestBundle\Controller\FOSRestController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,6 +24,11 @@ class RestController extends FOSRestController
      */
     public function checkSum(Request $request) {
         //TODO
+        /*$checksum = $request->get('checksum');
+        if ($checksum === null) {
+            throw new HttpException(500, 'Checksum is failed');
+        }*/
+
         //throw new HttpException(500,'Checksum is failed');
     }
 
@@ -56,10 +62,30 @@ class RestController extends FOSRestController
         $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
         if ($playerIdFromRedis !== null) {
             $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
-            return $player;
-        } else {
-            throw new HttpException(500, 'Uid is not valid');
+            if ($player !== null) {
+                return $player;
+            }
         }
+        throw new HttpException(500, 'Uid is not valid');
+    }
+
+    /**
+     * @param string $token
+     * @return Member
+     */
+    public function getMemberByToken($token) {
+        if ($token === null) {
+            throw new HttpException(500, 'Token is required');
+        }
+
+        $memberIdFromRedis = $this->container->get('snc_redis.members_tokens')->get($token);
+        if ($memberIdFromRedis !== null) {
+            $member = $this->container->get('doctrine')->getRepository(Member::class)->find($memberIdFromRedis);
+            if ($member !== null) {
+                return $member;
+            }
+        }
+        throw new HttpException(500, 'Token is not valid');
     }
 
     /**
@@ -80,4 +106,21 @@ class RestController extends FOSRestController
         }
     }
 
+    /**
+     * @param Member $member
+     * @param string $oldToken
+     * @return string
+     */
+    public function generateAndStoreNewToken(Member $member, $oldToken = null) {
+        try {
+            $token = md5(random_bytes(20));
+            if ($oldToken !== null) {
+                $this->container->get('snc_redis.members_tokens')->del([$oldToken]);
+            }
+            $this->container->get('snc_redis.members_tokens')->set($token, $member->getId());
+            return $token;
+        } catch (\Exception $e) {
+            throw new HttpException(500, 'Cannot generate new token');
+        }
+    }
 }
