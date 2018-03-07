@@ -43,7 +43,8 @@ class ApiGameController extends RestController
     public function infoAction(Request $request)
     {
         $this->checkSum($request);
-        $player = $this->getPlayerByUid($request);
+        $currentUid = $request->get('uid');
+        $player = $this->getPlayerByUid($currentUid);
         return $this->view([
             'data' => [
                 'id' => $player->getId(),
@@ -58,7 +59,7 @@ class ApiGameController extends RestController
                 'reg_date' => $player->getCreatedAt(),
                 'last_day' => $player->getLastDay()
             ],
-            'uid' => $this->generateAndStoreNewUid($player),
+            'uid' => $this->generateAndStoreNewUid($player, $currentUid),
         ], 200);    }
 
     /**
@@ -150,7 +151,8 @@ class ApiGameController extends RestController
             throw new HttpException(500, 'Score is required');
         }
 
-        $player = $this->getPlayerByUid($request);
+        $currentUid = $request->get('uid');
+        $player = $this->getPlayerByUid($currentUid);
         $player->setScore($player->getScore() + $score);
 
         $em = $this->getDoctrine()->getManager();
@@ -161,7 +163,7 @@ class ApiGameController extends RestController
             'data' => [
                 'score' => $player->getScore(),
             ],
-            'uid' => $this->generateAndStoreNewUid($player)
+            'uid' => $this->generateAndStoreNewUid($player, $currentUid)
         ], 200);
     }
 
@@ -179,7 +181,8 @@ class ApiGameController extends RestController
             throw new HttpException(500, 'Coins is required');
         }
 
-        $player = $this->getPlayerByUid($request);
+        $currentUid = $request->get('uid');
+        $player = $this->getPlayerByUid($currentUid);
         $player->setCoins($player->getCoins() + $coins);
 
         $em = $this->getDoctrine()->getManager();
@@ -190,7 +193,7 @@ class ApiGameController extends RestController
             'data' => [
                 'coins' => $player->getCoins(),
             ],
-            'uid' => $this->generateAndStoreNewUid($player)
+            'uid' => $this->generateAndStoreNewUid($player, $currentUid)
         ], 200);
     }
 
@@ -207,7 +210,8 @@ class ApiGameController extends RestController
             throw new HttpException(500, 'System is required');
         }
 
-        $player = $this->getPlayerByUid($request);
+        $currentUid = $request->get('uid');
+        $player = $this->getPlayerByUid($currentUid);
         $player->setSystem($system);
 
         $em = $this->getDoctrine()->getManager();
@@ -218,7 +222,7 @@ class ApiGameController extends RestController
             'data' => [
                 'coins' => $player->getCoins(),
             ],
-            'uid' => $this->generateAndStoreNewUid($player)
+            'uid' => $this->generateAndStoreNewUid($player, $currentUid)
         ], 200);
     }
 
@@ -236,7 +240,8 @@ class ApiGameController extends RestController
             throw new HttpException(500, 'Count is required');
         }
 
-        $player = $this->getPlayerByUid($request);
+        $currentUid = $request->get('uid');
+        $player = $this->getPlayerByUid($currentUid);
 
         $top = $this->container->get('doctrine')->getRepository(Player::class)->findBy([], ['score' => 'DESC'], $count);
         $top_result = [];
@@ -255,7 +260,7 @@ class ApiGameController extends RestController
             'data' => [
                 'top' => $top_result
             ],
-            'uid' => $this->generateAndStoreNewUid($player)
+            'uid' => $this->generateAndStoreNewUid($player, $currentUid)
         ], 200);
     }
 

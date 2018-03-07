@@ -45,11 +45,10 @@ class RestController extends FOSRestController
     }
 
     /**
-     * @param Request $request
+     * @param string $uid
      * @return Player
      */
-    public function getPlayerByUid(Request $request) {
-        $uid = $request->get('uid');
+    public function getPlayerByUid($uid) {
         if ($uid === null) {
             throw new HttpException(500, 'Uid is required');
         }
