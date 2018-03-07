@@ -43,8 +43,23 @@ class ApiGameController extends RestController
     public function infoAction(Request $request)
     {
         $this->checkSum($request);
-        return $this->view($this->getPlayerByUid($request), 200);
-    }
+        $player = $this->getPlayerByUid($request);
+        return $this->view([
+            'data' => [
+                'id' => $player->getId(),
+                'name' => $player->getName(),
+                'email' => $player->getEmail(),
+                'phone' => $player->getPhone(),
+                'sex' => $player->getSex(),
+                'birthday' => $player->getBirthday(),
+                'system' => $player->getSystem(),
+                'coins' => $player->getCoins(),
+                'score' => $player->getScore(),
+                'reg_date' => $player->getCreatedAt(),
+                'last_day' => $player->getLastDay()
+            ],
+            'uid' => $this->generateAndStoreNewUid($player),
+        ], 200);    }
 
     /**
      * @Route("/api/login", name="api_login", methods={"POST"})
@@ -57,23 +72,39 @@ class ApiGameController extends RestController
         $campaign = $this->extractCampaign($request);
 
         $login = $request->get('login');
-        if (!$login) {
+        if ($login === null) {
             throw new HttpException(500, 'Login is required');
         }
 
         $login_type = $request->get('login_type'); //Сам не знаю, зачем этот параметр тут. Но ТЗ есть ТЗ.
-        if (!$login_type) {
+        if ($login_type === null) {
             throw new HttpException(500, 'Login type is required');
         }
 
-        $name = $request->get('name');
-        $email = $request->get('email');
-        $phone = $request->get('phone');
-        $sex = $request->get('sex');
-        $birthday = $request->get('birthday');
+        //Указывать пароль при авторизации, видимо, тоже не надо.
 
         $player = $this->container->get('doctrine')->getRepository(Player::class)->findBy(['login' => $login, 'campaign' => $campaign->getId()]);
         if (!$player) {
+            $name = $request->get('name');
+            if ($name === null) {
+                throw new HttpException(500, 'Name is required');
+            }
+
+            $email = $request->get('email');
+            if ($email === null) {
+                throw new HttpException(500, 'Email is required');
+            }
+
+            $phone = $request->get('phone');
+            if ($phone === null) {
+                throw new HttpException(500, 'Phone is required');
+            }
+
+            $sex = $request->get('sex');
+            if ($sex === null) {
+                throw new HttpException(500, 'Sex is required');
+            }
+
             $player = new Player();
             $player->setLogin($login);
             $player->setCampaign($campaign);
@@ -81,7 +112,7 @@ class ApiGameController extends RestController
             $player->setEmail($email);
             $player->setPhone($phone);
             $player->setSex($sex);
-            $player->setBirthday(new \DateTime($birthday));
+            $player->setBirthday(new \DateTime($request->get('birthday')));
             $player->setScore(0);
             $player->setCoins(0);
             $player->setSystem([]);
@@ -93,17 +124,6 @@ class ApiGameController extends RestController
             $player = $player[0];
         }
 
-        $uid = null;
-        $operation_token = null;
-        try {
-            $uid = md5(random_bytes(20));
-            $operation_token = md5(random_bytes(20));
-        } catch (\Exception $e) {
-            throw new HttpException(500, 'Cannot get new tokens');
-        }
-
-        $this->container->get('snc_redis.players_uids')->set($uid, $player->getId());
-        $this->container->get('snc_redis.players_operations_tokens')->set($operation_token, $player->getId());
         return $this->view([
             'data' => [
                 'system' => $player->getSystem(),
@@ -112,8 +132,7 @@ class ApiGameController extends RestController
                 'reg_date' => $player->getCreatedAt(),
                 'last_day' => $player->getLastDay()
             ],
-            'uid' => $uid,
-            'operation_token' => $operation_token
+            'uid' => $this->generateAndStoreNewUid($player),
         ], 200);
     }
 
@@ -124,63 +143,25 @@ class ApiGameController extends RestController
      */
     public function submitScoreAction(Request $request)
     {
-        parent::checkSum();
-
-        $uid = $request->get('uid');
-        if (!$uid) {
-            throw new HttpException(500, 'Uid is required');
-        }
+        $this->checkSum($request);
 
         $score = $request->get('score');
         if (!$score) {
             throw new HttpException(500, 'Score is required');
         }
 
-        $operation_token = $request->get('operation_token');
-        if (!$operation_token) {
-            throw new HttpException(500, 'Operation token is required');
-        }
-
-        $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
-        if (!$playerIdFromRedis) {
-            throw new HttpException(500, 'Uid is not valid');
-        }
-
-        $playerIdByOperationTokenFromRedis = $this->container->get('snc_redis.players_operations_tokens')->get($operation_token);
-        if (!$playerIdByOperationTokenFromRedis) {
-            throw new HttpException(500, 'Operation token is not valid');
-        }
-
-        if ($playerIdFromRedis != $playerIdByOperationTokenFromRedis) {
-            throw new HttpException(500, 'Operation token mismatch');
-        }
-
-        $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
-        if (!$player) {
-            throw new HttpException(500, 'Player did not found');
-        }
-
+        $player = $this->getPlayerByUid($request);
         $player->setScore($player->getScore() + $score);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($player);
         $em->flush();
 
-        $this->container->get('snc_redis.players_operations_tokens')->del($operation_token);
-
-        try {
-            $operation_token = md5(random_bytes(20));
-        } catch (\Exception $e) {
-            throw new HttpException(500, 'Cannot get new tokens');
-        }
-
-        $this->container->get('snc_redis.players_operations_tokens')->set($operation_token, $player->getId());
-
         return $this->view([
             'data' => [
                 'score' => $player->getScore(),
             ],
-            'operation_token' => $operation_token
+            'uid' => $this->generateAndStoreNewUid($player)
         ], 200);
     }
 
@@ -191,64 +172,25 @@ class ApiGameController extends RestController
      */
     public function submitCoinsAction(Request $request)
     {
-        parent::checkSum();
-
-        //Скажу честно, я не успел придумать, как централизировать данный код. Поэтому да, копипасты много.
-        $uid = $request->get('uid');
-        if (!$uid) {
-            throw new HttpException(500, 'Uid is required');
-        }
+        $this->checkSum($request);
 
         $coins = $request->get('coins');
         if (!$coins) {
             throw new HttpException(500, 'Coins is required');
         }
 
-        $operation_token = $request->get('operation_token');
-        if (!$operation_token) {
-            throw new HttpException(500, 'Operation token is required');
-        }
-
-        $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
-        if (!$playerIdFromRedis) {
-            throw new HttpException(500, 'Uid is not valid');
-        }
-
-        $playerIdByOperationTokenFromRedis = $this->container->get('snc_redis.players_operations_tokens')->get($operation_token);
-        if (!$playerIdByOperationTokenFromRedis) {
-            throw new HttpException(500, 'Operation token is not valid');
-        }
-
-        if ($playerIdFromRedis != $playerIdByOperationTokenFromRedis) {
-            throw new HttpException(500, 'Operation token mismatch');
-        }
-
-        $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
-        if (!$player) {
-            throw new HttpException(500, 'Player did not found');
-        }
-
+        $player = $this->getPlayerByUid($request);
         $player->setCoins($player->getCoins() + $coins);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($player);
         $em->flush();
 
-        $this->container->get('snc_redis.players_operations_tokens')->del($operation_token);
-
-        try {
-            $operation_token = md5(random_bytes(20));
-        } catch (\Exception $e) {
-            throw new HttpException(500, 'Cannot get new tokens');
-        }
-
-        $this->container->get('snc_redis.players_operations_tokens')->set($operation_token, $player->getId());
-
         return $this->view([
             'data' => [
                 'coins' => $player->getCoins(),
             ],
-            'operation_token' => $operation_token
+            'uid' => $this->generateAndStoreNewUid($player)
         ], 200);
     }
 
@@ -258,68 +200,25 @@ class ApiGameController extends RestController
      * @return \FOS\RestBundle\View\View
      */
     public function updateSystemAction(Request $request) {
-        parent::checkSum();
-
-        $uid = $request->get('uid');
-        if (!$uid) {
-            throw new HttpException(500, 'Uid is required');
-        }
+        $this->checkSum($request);
 
         $system = $request->get('system');
         if (!$system) {
             throw new HttpException(500, 'System is required');
         }
 
-        $operation_token = $request->get('operation_token');
-        if (!$operation_token) {
-            throw new HttpException(500, 'Operation token is required');
-        }
-
-        $operation_token = $request->get('operation_token');
-        if (!$operation_token) {
-            throw new HttpException(500, 'Operation token is required');
-        }
-
-        $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
-        if (!$playerIdFromRedis) {
-            throw new HttpException(500, 'Uid is not valid');
-        }
-
-        $playerIdByOperationTokenFromRedis = $this->container->get('snc_redis.players_operations_tokens')->get($operation_token);
-        if (!$playerIdByOperationTokenFromRedis) {
-            throw new HttpException(500, 'Operation token is not valid');
-        }
-
-        if ($playerIdFromRedis != $playerIdByOperationTokenFromRedis) {
-            throw new HttpException(500, 'Operation token mismatch');
-        }
-
-        $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
-        if (!$player) {
-            throw new HttpException(500, 'Player did not found');
-        }
-
+        $player = $this->getPlayerByUid($request);
         $player->setSystem($system);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($player);
         $em->flush();
 
-        $this->container->get('snc_redis.players_operations_tokens')->del($operation_token);
-
-        try {
-            $operation_token = md5(random_bytes(20));
-        } catch (\Exception $e) {
-            throw new HttpException(500, 'Cannot get new tokens');
-        }
-
-        $this->container->get('snc_redis.players_operations_tokens')->set($operation_token, $player->getId());
-
         return $this->view([
             'data' => [
                 'coins' => $player->getCoins(),
             ],
-            'operation_token' => $operation_token
+            'uid' => $this->generateAndStoreNewUid($player)
         ], 200);
     }
 
@@ -330,27 +229,14 @@ class ApiGameController extends RestController
      */
     public function ratingAction(Request $request)
     {
-        parent::checkSum();
-
-        $uid = $request->get('uid');
-        if (!$uid) {
-            throw new HttpException(500, 'Uid is required');
-        }
+        $this->checkSum($request);
 
         $count = $request->get('count');
         if (!$count) {
             throw new HttpException(500, 'Count is required');
         }
 
-        $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
-        if (!$playerIdFromRedis) {
-            throw new HttpException(500, 'Uid is not valid');
-        }
-
-        $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
-        if (!$player) {
-            throw new HttpException(500, 'Player did not found');
-        }
+        $player = $this->getPlayerByUid($request);
 
         $top = $this->container->get('doctrine')->getRepository(Player::class)->findBy([], ['score' => 'DESC'], $count);
         $top_result = [];
@@ -368,7 +254,8 @@ class ApiGameController extends RestController
         return $this->view([
             'data' => [
                 'top' => $top_result
-            ]
+            ],
+            'uid' => $this->generateAndStoreNewUid($player)
         ], 200);
     }
 

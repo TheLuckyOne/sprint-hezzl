@@ -32,8 +32,8 @@ class RestController extends FOSRestController
      */
     public function extractCampaign(Request $request) {
         $campaign_id = $request->get('campaign_id');
-        if (!$campaign_id) {
-            throw new HttpException(500, 'Campaign is required');
+        if ($campaign_id === null) {
+            throw new HttpException(500, 'Campaign id is required');
         }
 
         $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($campaign_id);
@@ -44,17 +44,40 @@ class RestController extends FOSRestController
         return $campaign;
     }
 
+    /**
+     * @param Request $request
+     * @return Player
+     */
     public function getPlayerByUid(Request $request) {
         $uid = $request->get('uid');
-        if (!$uid) {
+        if ($uid === null) {
             throw new HttpException(500, 'Uid is required');
         }
 
         $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
-        if ($playerIdFromRedis) {
-            return $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
+        if ($playerIdFromRedis !== null) {
+            $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
+            return $player;
         } else {
             throw new HttpException(500, 'Uid is not valid');
+        }
+    }
+
+    /**
+     * @param Player $player
+     * @param string $oldUid
+     * @return string
+     */
+    public function generateAndStoreNewUid(Player $player, $oldUid = null) {
+        try {
+            $uid = md5(random_bytes(20));
+            if ($oldUid !== null) {
+                $this->container->get('snc_redis.players_uids')->del([$oldUid]);
+            }
+            $this->container->get('snc_redis.players_uids')->set($uid, $player->getId());
+            return $uid;
+        } catch (\Exception $e) {
+            throw new HttpException(500, 'Cannot generate new uid');
         }
     }
 
