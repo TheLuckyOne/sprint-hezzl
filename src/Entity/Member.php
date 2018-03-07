@@ -5,10 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AccountRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\MemberRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Account
+class Member
 {
     /**
      * @ORM\Id
@@ -44,7 +44,7 @@ class Account
     private $system_field;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\AccountType")
+     * @ORM\ManyToOne(targetEntity="MemberType")
      * @ORM\JoinColumn(nullable=false)
      */
     private $type;
@@ -143,7 +143,7 @@ class Account
     }
 
     /**
-     * @return AccountType
+     * @return MemberType
      */
     public function getType()
     {
@@ -151,7 +151,7 @@ class Account
     }
 
     /**
-     * @param AccountType $type
+     * @param MemberType $type
      */
     public function setType($type): void
     {

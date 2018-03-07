@@ -25,17 +25,8 @@ class ApiGameController extends RestController
      */
     public function initAction(Request $request)
     {
-        parent::checkSum();
-
-        $id = $request->get('campaign_id');
-        if (!$id) {
-            throw new HttpException(500, 'Id is required');
-        }
-
-        $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($id);
-        if (!$campaign) {
-            throw new HttpException(500, 'Campaign not found');
-        }
+        $this->checkSum($request);
+        $campaign = $this->extractCampaign($request);
 
         return $this->view([
             'status' => $campaign->getCampaignType()->getStatus(),
@@ -51,22 +42,8 @@ class ApiGameController extends RestController
      */
     public function infoAction(Request $request)
     {
-        parent::checkSum();
-
-        $uid = $request->get('uid');
-        if (!$uid) {
-            throw new HttpException(500, 'Uid is required');
-        }
-
-        $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
-        $player = null;
-        if ($playerIdFromRedis) {
-            $player = $this->container->get('doctrine')->getRepository(Player::class)->find($playerIdFromRedis);
-        } else {
-            throw new HttpException(500, 'Uid is not valid');
-        }
-
-        return $this->view($player, 200);
+        $this->checkSum($request);
+        return $this->view($this->getPlayerByUid($request), 200);
     }
 
     /**
@@ -76,18 +53,8 @@ class ApiGameController extends RestController
      */
     public function loginAction(Request $request)
     {
-        parent::checkSum();
-
-        $campaign_id = $request->get('campaign_id');
-        if (!$campaign_id) {
-            throw new HttpException(500, 'Campaign id is required');
-        }
-
-        $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($campaign_id);
-
-        if (!$campaign) {
-            throw new HttpException(500, 'Campaign not found');
-        }
+        $this->checkSum($request);
+        $campaign = $this->extractCampaign($request);
 
         $login = $request->get('login');
         if (!$login) {
@@ -103,12 +70,9 @@ class ApiGameController extends RestController
         $email = $request->get('email');
         $phone = $request->get('phone');
         $sex = $request->get('sex');
-        $city = $request->get('city');
         $birthday = $request->get('birthday');
-        $company = $request->get('company');
-        $job = $request->get('job');
 
-        $player = $this->container->get('doctrine')->getRepository(Player::class)->findBy(['login' => $login, 'campaign' => $campaign_id]);
+        $player = $this->container->get('doctrine')->getRepository(Player::class)->findBy(['login' => $login, 'campaign' => $campaign->getId()]);
         if (!$player) {
             $player = new Player();
             $player->setLogin($login);
@@ -117,10 +81,7 @@ class ApiGameController extends RestController
             $player->setEmail($email);
             $player->setPhone($phone);
             $player->setSex($sex);
-            $player->setCity($city);
             $player->setBirthday(new \DateTime($birthday));
-            $player->setCompany($company);
-            $player->setJob($job);
             $player->setScore(0);
             $player->setCoins(0);
             $player->setSystem([]);

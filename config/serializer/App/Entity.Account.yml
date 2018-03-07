@@ -1,4 +1,4 @@
-App\Entity\Account:
+App\Entity\Member:
     exclusion_policy: ALL
     properties:
         name:

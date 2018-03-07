@@ -51,24 +51,9 @@ class Player
     private $sex;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $city;
-
-    /**
      * @ORM\Column(type="date")
      */
     private $birthday;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $company;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $job;
 
     /**
      * @ORM\Column(type="integer", options={"default": 0})
@@ -208,22 +193,6 @@ class Player
     }
 
     /**
-     * @return string
-     */
-    public function getCity()
-    {
-        return $this->city;
-    }
-
-    /**
-     * @param string $city
-     */
-    public function setCity($city): void
-    {
-        $this->city = $city;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getBirthday()
@@ -237,38 +206,6 @@ class Player
     public function setBirthday($birthday): void
     {
         $this->birthday = $birthday;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCompany()
-    {
-        return $this->company;
-    }
-
-    /**
-     * @param string $company
-     */
-    public function setCompany($company): void
-    {
-        $this->company = $company;
-    }
-
-    /**
-     * @return string
-     */
-    public function getJob()
-    {
-        return $this->job;
-    }
-
-    /**
-     * @param string $job
-     */
-    public function setJob($job): void
-    {
-        $this->job = $job;
     }
 
     /**

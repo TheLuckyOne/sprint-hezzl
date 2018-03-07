@@ -15,10 +15,10 @@ class Version20180304145358 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('ALTER TABLE account_type ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
+        $this->addSql('ALTER TABLE member_type ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
         $this->addSql('ALTER TABLE player ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
         $this->addSql('ALTER TABLE campaign ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
-        $this->addSql('ALTER TABLE account ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
+        $this->addSql('ALTER TABLE member ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
         $this->addSql('ALTER TABLE campaign_status ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
         $this->addSql('ALTER TABLE campaign_type ALTER created_at SET DEFAULT CURRENT_TIMESTAMP');
     }
@@ -29,8 +29,8 @@ class Version20180304145358 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE account_type ALTER created_at DROP DEFAULT');
-        $this->addSql('ALTER TABLE account ALTER created_at DROP DEFAULT');
+        $this->addSql('ALTER TABLE member_type ALTER created_at DROP DEFAULT');
+        $this->addSql('ALTER TABLE member ALTER created_at DROP DEFAULT');
         $this->addSql('ALTER TABLE player ALTER created_at DROP DEFAULT');
         $this->addSql('ALTER TABLE campaign ALTER created_at DROP DEFAULT');
         $this->addSql('ALTER TABLE campaign_status ALTER created_at DROP DEFAULT');

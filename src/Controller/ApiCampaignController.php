@@ -8,7 +8,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Account;
+use App\Entity\Member;
 use App\Entity\Campaign;
 use App\Entity\CampaignType;
 use Symfony\Component\HttpFoundation\Request;
@@ -38,14 +38,14 @@ class ApiCampaignController extends RestController
         $serializer = $this->container->get('jms_serializer');
 
         $campaignData = $request->request->all();
-        $account = $this->container->get('doctrine')->getRepository(Account::class)->find($campaignData['account']);
+        $member = $this->container->get('doctrine')->getRepository(Member::class)->find($campaignData['member']);
         $campaignType = $this->container->get('doctrine')->getRepository(CampaignType::class)->find($campaignData['campaign_type']);
 
-        unset($campaignData['account']);
+        unset($campaignData['member']);
         unset($campaignData['campaign_type']);
 
         $campaign = $serializer->fromArray($campaignData, Campaign::class);
-        $campaign->setAccount($account);
+        $campaign->setMember($member);
         $campaign->setCampaignType($campaignType);
 
         $em = $this->getDoctrine()->getManager();

@@ -20,15 +20,15 @@ rest_campaign_status:
     prefix:   /api
     methods: [GET, POST, PUT]
 
-rest_accounts:
+rest_members:
     type: rest
-    resource: 'App\Controller\ApiAccountController'
+    resource: 'App\Controller\ApiMemberController'
     prefix:   /api
     methods: [GET, POST, PUT]
 
-rest_accounts_type:
+rest_members_type:
     type: rest
-    resource: 'App\Controller\ApiAccountTypeController'
+    resource: 'App\Controller\ApiMemberTypeController'
     prefix:   /api
     methods: [GET, POST, PUT]
 

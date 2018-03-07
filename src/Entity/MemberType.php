@@ -5,10 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\AccountTypeRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\MemberTypeRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class AccountType
+class MemberType
 {
     /**
      * @ORM\Id

@@ -13,13 +13,7 @@ App\Entity\Player:
             expose: true
         sex:
             expose: true
-        city:
-            expose: true
         birthday:
-            expose: true
-        company:
-            expose: true
-        job:
             expose: true
         score:
             expose: true

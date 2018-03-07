@@ -20,10 +20,10 @@ class Campaign
     // add your own fields
 
     /**
-     * @ORM\ManyToOne(targetEntity="Account")
+     * @ORM\ManyToOne(targetEntity="Member")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $account;
+    private $member;
 
     /**
      * @ORM\ManyToOne(targetEntity="CampaignType")
@@ -73,19 +73,19 @@ class Campaign
     }
 
     /**
-     * @return Account
+     * @return Member
      */
-    public function getAccount()
+    public function getMember()
     {
-        return $this->account;
+        return $this->member;
     }
 
     /**
-     * @param Account $account
+     * @param Member $member
      */
-    public function setAccount($account): void
+    public function setMember($member): void
     {
-        $this->account = $account;
+        $this->member = $member;
     }
 
     /**

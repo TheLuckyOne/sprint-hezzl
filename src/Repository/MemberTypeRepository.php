@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\Account;
+use App\Entity\MemberType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * @method Account|null find($id, $lockMode = null, $lockVersion = null)
- * @method Account|null findOneBy(array $criteria, array $orderBy = null)
- * @method Account[]    findAll()
- * @method Account[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method MemberType|null find($id, $lockMode = null, $lockVersion = null)
+ * @method MemberType|null findOneBy(array $criteria, array $orderBy = null)
+ * @method MemberType[]    findAll()
+ * @method MemberType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AccountRepository extends ServiceEntityRepository
+class MemberTypeRepository extends ServiceEntityRepository
 {
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, Account::class);
+        parent::__construct($registry, MemberType::class);
     }
 
     /*
