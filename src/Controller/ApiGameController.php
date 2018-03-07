@@ -9,7 +9,6 @@
 namespace App\Controller;
 
 
-use App\Entity\Campaign;
 use App\Entity\Player;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;

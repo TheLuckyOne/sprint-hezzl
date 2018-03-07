@@ -9,6 +9,7 @@
         "nelmio/api-doc-bundle": "^3.1",
         "predis/predis": "^1.1",
         "sensio/framework-extra-bundle": "^5.1",
+        "sentry/sentry-symfony": "^2.0",
         "snc/redis-bundle": "^2.0",
         "symfony/asset": "^4.0",
         "symfony/console": "^4.0",
@@ -81,6 +82,6 @@
             "id": "",
             "allow-contrib": false
         },
-        "symfony.id": "01C80ZX22BAXJ26KA5GM2CRZFT"
+        "symfony.id": "01C8154CHF2K4MKF6N3KR3B17S"
     }
 }
