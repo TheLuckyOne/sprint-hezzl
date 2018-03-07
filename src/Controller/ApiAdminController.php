@@ -251,7 +251,7 @@ class ApiAdminController extends RestController
             throw new HttpException(500, 'Page is required');
         }
 
-        $filter = $request->get('filter'); //Без параметра количества записей на страницу этот параметр бесполезен
+        $filter = $request->get('filter');
 
         if ($filter === null) {
             $filter = [];
