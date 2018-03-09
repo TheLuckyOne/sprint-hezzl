@@ -79,12 +79,12 @@ class ApiGameController extends RestController
 
         $login = $request->get('login');
         if ($login === null) {
-            throw new HttpException(500, 'Login is required');
+            throw new HttpException(400, 'Login is required');
         }
 
         $login_type = $request->get('login_type'); //Сам не знаю, зачем этот параметр тут. Но ТЗ есть ТЗ.
         if ($login_type === null) {
-            throw new HttpException(500, 'Login type is required');
+            throw new HttpException(400, 'Login type is required');
         }
 
         //Указывать пароль при авторизации, видимо, тоже не надо.
@@ -93,22 +93,22 @@ class ApiGameController extends RestController
         if ($player === null) {
             $name = $request->get('name');
             if ($name === null) {
-                throw new HttpException(500, 'Name is required');
+                throw new HttpException(400, 'Name is required');
             }
 
             $email = $request->get('email');
             if ($email === null) {
-                throw new HttpException(500, 'Email is required');
+                throw new HttpException(400, 'Email is required');
             }
 
             $phone = $request->get('phone');
             if ($phone === null) {
-                throw new HttpException(500, 'Phone is required');
+                throw new HttpException(400, 'Phone is required');
             }
 
             $sex = $request->get('sex');
             if ($sex === null) {
-                throw new HttpException(500, 'Sex is required');
+                throw new HttpException(400, 'Sex is required');
             }
 
             $player = new Player();
@@ -153,7 +153,7 @@ class ApiGameController extends RestController
 
         $score = $request->get('score');
         if (!$score) {
-            throw new HttpException(500, 'Score is required');
+            throw new HttpException(400, 'Score is required');
         }
 
         $currentUid = $request->get('uid');
@@ -183,7 +183,7 @@ class ApiGameController extends RestController
 
         $coins = $request->get('coins');
         if (!$coins) {
-            throw new HttpException(500, 'Coins is required');
+            throw new HttpException(400, 'Coins is required');
         }
 
         $currentUid = $request->get('uid');
@@ -212,7 +212,7 @@ class ApiGameController extends RestController
 
         $system = $request->get('system');
         if (!$system) {
-            throw new HttpException(500, 'System is required');
+            throw new HttpException(400, 'System is required');
         }
 
         $currentUid = $request->get('uid');
@@ -242,7 +242,7 @@ class ApiGameController extends RestController
 
         $count = $request->get('count');
         if (!$count) {
-            throw new HttpException(500, 'Count is required');
+            throw new HttpException(400, 'Count is required');
         }
 
         $currentUid = $request->get('uid');

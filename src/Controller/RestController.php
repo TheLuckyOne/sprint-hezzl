@@ -32,10 +32,10 @@ class RestController extends FOSRestController
         //TODO
         /*$checksum = $request->get('checksum');
         if ($checksum === null) {
-            throw new HttpException(500, 'Checksum is failed');
+            throw new HttpException(400, 'Checksum is failed');
         }*/
 
-        //throw new HttpException(500,'Checksum is failed');
+        //throw new HttpException(400,'Checksum is failed');
     }
 
     /**
@@ -45,12 +45,12 @@ class RestController extends FOSRestController
     public function extractCampaign(Request $request) {
         $campaign_id = $request->get('campaign_id');
         if ($campaign_id === null) {
-            throw new HttpException(500, 'Campaign id is required');
+            throw new HttpException(400, 'Campaign id is required');
         }
 
         $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($campaign_id);
         if ($campaign === null) {
-            throw new HttpException(500, 'Campaign not found');
+            throw new HttpException(400, 'Campaign not found');
         }
 
         return $campaign;
@@ -62,7 +62,7 @@ class RestController extends FOSRestController
      */
     public function getPlayerByUid($uid) {
         if ($uid === null) {
-            throw new HttpException(500, 'Uid is required');
+            throw new HttpException(400, 'Uid is required');
         }
 
         $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
@@ -72,7 +72,7 @@ class RestController extends FOSRestController
                 return $player;
             }
         }
-        throw new HttpException(500, 'Uid is not valid');
+        throw new HttpException(400, 'Uid is not valid');
     }
 
     /**
@@ -81,7 +81,7 @@ class RestController extends FOSRestController
      */
     public function getMemberByToken($token) {
         if ($token === null) {
-            throw new HttpException(500, 'Token is required');
+            throw new HttpException(400, 'Token is required');
         }
 
         $memberIdFromRedis = $this->container->get('snc_redis.members_tokens')->get($token);
@@ -91,7 +91,7 @@ class RestController extends FOSRestController
                 return $member;
             }
         }
-        throw new HttpException(500, 'Token is not valid');
+        throw new HttpException(400, 'Token is not valid');
     }
 
     /**
@@ -108,7 +108,7 @@ class RestController extends FOSRestController
             $this->container->get('snc_redis.players_uids')->set($uid, $player->getId());
             return $uid;
         } catch (\Exception $e) {
-            throw new HttpException(500, 'Cannot generate new uid');
+            throw new HttpException(400, 'Cannot generate new uid');
         }
     }
 
@@ -126,7 +126,7 @@ class RestController extends FOSRestController
             $this->container->get('snc_redis.members_tokens')->set($token, $member->getId());
             return $token;
         } catch (\Exception $e) {
-            throw new HttpException(500, 'Cannot generate new token');
+            throw new HttpException(400, 'Cannot generate new token');
         }
     }
 }

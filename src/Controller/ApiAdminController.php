@@ -58,32 +58,32 @@ class ApiAdminController extends RestController
 
         $name = $request->get('name');
         if ($name === null) {
-            throw new HttpException(500, 'Name is required');
+            throw new HttpException(400, 'Name is required');
         }
 
         $email = $request->get('email');
         if ($email === null) {
-            throw new HttpException(500, 'Email is required');
+            throw new HttpException(400, 'Email is required');
         }
 
         $phone = $request->get('phone');
         if ($phone === null) {
-            throw new HttpException(500, 'Phone is required');
+            throw new HttpException(400, 'Phone is required');
         }
 
         $password = $request->get('password');
         if ($password === null) {
-            throw new HttpException(500, 'Password is required');
+            throw new HttpException(400, 'Password is required');
         }
 
         $typeId = $request->get('type_id');
         if ($typeId === null) {
-            throw new HttpException(500, 'Type id is required');
+            throw new HttpException(400, 'Type id is required');
         }
 
         $memberType = $this->container->get('doctrine')->getRepository(MemberType::class)->find($typeId);
         if ($memberType === null) {
-            throw new HttpException(500, 'Type is not valid');
+            throw new HttpException(400, 'Type is not valid');
         }
 
         $member = $this->container->get('doctrine')->getRepository(Member::class)->findBy(['email' => $email]);
@@ -92,7 +92,7 @@ class ApiAdminController extends RestController
         }
 
         if (count($member) > 0) {
-            throw new HttpException(500, 'Member exists');
+            throw new HttpException(400, 'Member exists');
         }
 
         $member = new Member();
@@ -123,17 +123,17 @@ class ApiAdminController extends RestController
 
         $email = $request->get('email');
         if ($email === null) {
-            throw new HttpException(500, 'Email is required');
+            throw new HttpException(400, 'Email is required');
         }
 
         $password = $request->get('password');
         if ($password === null) {
-            throw new HttpException(500, 'Password is required');
+            throw new HttpException(400, 'Password is required');
         }
 
         $member = $this->container->get('doctrine')->getRepository(Member::class)->findBy(['email' => $email, 'password' => sha1($password)]);
         if (count($member) == 0) {
-            throw new HttpException(500, 'Member not found');
+            throw new HttpException(400, 'Member not found');
         }
 
         $member = $member[0];
@@ -157,7 +157,7 @@ class ApiAdminController extends RestController
 
         $password = $request->get('password');
         if ($password === null) {
-            throw new HttpException(500, 'Password is required');
+            throw new HttpException(400, 'Password is required');
         }
 
         $currentToken = $request->get('token');
@@ -249,12 +249,12 @@ class ApiAdminController extends RestController
 
         $count = $request->get('count');
         if ($count === null) {
-            throw new HttpException(500, 'Count is required');
+            throw new HttpException(400, 'Count is required');
         }
 
         $page = $request->get('page'); //Без параметра количества записей на страницу этот параметр бесполезен
         if ($page === null) {
-            throw new HttpException(500, 'Page is required');
+            throw new HttpException(400, 'Page is required');
         }
 
         $filter = $request->get('filter');
@@ -348,17 +348,17 @@ class ApiAdminController extends RestController
 
         $name = $request->get('name');
         if ($name === null) {
-            throw new HttpException(500, 'Name is required');
+            throw new HttpException(400, 'Name is required');
         }
 
         $campaignTypeId = $request->get('campaign_type_id');
         if ($name === null) {
-            throw new HttpException(500, 'Name is required');
+            throw new HttpException(400, 'Name is required');
         }
 
         $campaignType = $this->container->get('doctrine')->getRepository(CampaignType::class)->find($campaignTypeId);
         if ($campaignType === null) {
-            throw new HttpException(500, 'Campaign type is not valid');
+            throw new HttpException(400, 'Campaign type is not valid');
         }
 
         $campaign = new Campaign();
@@ -396,12 +396,12 @@ class ApiAdminController extends RestController
 
         $campaignId = $request->get('campaign_id');
         if ($campaignId === null) {
-            throw new HttpException(500, 'Campaign id is required');
+            throw new HttpException(400, 'Campaign id is required');
         }
 
         $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($campaignId);
         if ($campaign === null) {
-            throw new HttpException(500, 'Campaign is not valid');
+            throw new HttpException(400, 'Campaign is not valid');
         }
 
         return $this->view([
@@ -429,17 +429,17 @@ class ApiAdminController extends RestController
 
         $campaignId = $request->get('campaign_id');
         if ($campaignId === null) {
-            throw new HttpException(500, 'Campaign id is required');
+            throw new HttpException(400, 'Campaign id is required');
         }
 
         $name = $request->get('name');
         if ($name === null) {
-            throw new HttpException(500, 'Name is required');
+            throw new HttpException(400, 'Name is required');
         }
 
         $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($campaignId);
         if ($campaign === null) {
-            throw new HttpException(500, 'Campaign is not valid');
+            throw new HttpException(400, 'Campaign is not valid');
         }
 
         $campaign->setName($name);
@@ -469,17 +469,17 @@ class ApiAdminController extends RestController
 
         $campaignId = $request->get('campaign_id');
         if ($campaignId === null) {
-            throw new HttpException(500, 'Campaign id is required');
+            throw new HttpException(400, 'Campaign id is required');
         }
 
         $status = $request->get('status');
         if ($status === null) {
-            throw new HttpException(500, 'Name is required');
+            throw new HttpException(400, 'Name is required');
         }
 
         $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($campaignId);
         if ($campaign === null) {
-            throw new HttpException(500, 'Campaign is not valid');
+            throw new HttpException(400, 'Campaign is not valid');
         }
 
         $campaign->setName($name);
@@ -507,17 +507,17 @@ class ApiAdminController extends RestController
 
         $campaignId = $request->get('campaign_id');
         if ($campaignId === null) {
-            throw new HttpException(500, 'Campaign id is required');
+            throw new HttpException(400, 'Campaign id is required');
         }
 
         $customSetting = $request->get('custom_setting');
         if ($customSetting === null) {
-            throw new HttpException(500, 'Custom setting is required');
+            throw new HttpException(400, 'Custom setting is required');
         }
 
         $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($campaignId);
         if ($campaign === null) {
-            throw new HttpException(500, 'Campaign is not valid');
+            throw new HttpException(400, 'Campaign is not valid');
         }
 
         $campaign->setCustomSetting($customSetting);
