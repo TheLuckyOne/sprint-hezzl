@@ -49,10 +49,15 @@ class ApiMemberController extends RestController
 
         $member = $serializer->fromArray($memberData, Member::class);
         $member->setType($memberType);
+        $member->setPassword($member->getPassword());
+        $uid = $this->generateNewUid($member);
+        $member->setUid($uid);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($member);
         $em->flush();
+
+        $this->storeUid($member, $uid);
 
         return $this->view($member, 200);
     }

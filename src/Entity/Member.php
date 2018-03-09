@@ -51,7 +51,7 @@ class Member
     private $password;
 
     /**
-     * @ORM\Column(type="jsonb")
+     * @ORM\Column(type="json_array")
      */
     private $system_field;
 
@@ -62,7 +62,7 @@ class Member
     private $type;
 
     /**
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=32)
      */
     private $uid;
 
@@ -133,6 +133,14 @@ class Member
     public function setPhone($phone): void
     {
         $this->phone = $phone;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
     }
 
     /**

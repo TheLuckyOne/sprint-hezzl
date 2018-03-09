@@ -19,7 +19,6 @@ use App\Entity\Campaign;
 use App\Entity\CampaignType;
 use App\Entity\Member;
 use App\Entity\MemberType;
-use App\Entity\Player;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,8 +35,8 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $currentUid = $request->get('uid');
+        $member = $this->getMemberByUid($currentUid);
         return $this->view([
             'data' => [
                 'name' => $member->getName(),
@@ -101,13 +100,19 @@ class ApiAdminController extends RestController
         $member->setPassword($password);
         $member->setType($memberType);
         $member->setSystemField([]);
+        $uid = $this->generateNewUid($member);
+        $member->setUid($uid);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($member);
         $em->flush();
 
+        $this->storeUid($member, $uid);
+        $em->persist($member);
+        $em->flush();
+
         return $this->view([
-            'token' => $this->generateAndStoreNewToken($member)
+            'uid' => $uid
         ], 200);
     }
 
@@ -141,6 +146,7 @@ class ApiAdminController extends RestController
                 'name' => $member->getName(),
                 'system_field' => $member->getSystemField()
             ],
+            'uid' => $this->generateAndStoreNewUid($member)
         ], 200);
     }
 
@@ -158,10 +164,9 @@ class ApiAdminController extends RestController
             throw new HttpException(400, 'Password is required');
         }
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $member = $this->getMemberByUid($request->get('uid'));
         return $this->view([
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
+            'uid' => $this->generateAndStoreNewUid($member)
         ], 200);
     }
 
@@ -174,10 +179,9 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $member = $this->getMemberByUid($request->get('uid'));
         return $this->view([
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
+            'uid' => $this->generateAndStoreNewUid($member)
         ], 200);
     }
 
@@ -189,10 +193,14 @@ class ApiAdminController extends RestController
     public function dashboardAnalyticsAction(Request $request) {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $currentUid = $request->get('uid');
+        $member = $this->getMemberByUid($currentUid);
 
-        $campaigns = $this->container->get('doctrine')->getRepository(Campaign::class)->findBy(['member_id' => $member->getId()]);
+        $campaigns = $this->container->get('doctrine')->getRepository(Campaign::class)->findBy(['member' => $member]);
+        if (count($campaigns) == 0) {
+            throw new HttpException(400, 'Campaigns did not find');
+        }
+
         $players_amount = 0;
         foreach ($campaigns as $campaign) { //Один фиг, я не знаю, как тут join-ы реализовать
             $players = $this->container->get('doctrine')->getRepository(Campaign::class)->findBy(['campaign_id' => $campaign->getId()]);
@@ -216,8 +224,8 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $currentUid = $request->get('uid');
+        $member = $this->getMemberByUid($currentUid);
 
         $em = $this->getDoctrine()->getManager();
         $columns = $em->getClassMetadata(Campaign::class)->getColumnNames();
@@ -292,8 +300,8 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $currentUid = $request->get('uid');
+        $this->getMemberByUid($currentUid);
 
         $campaignTypes = $this->container->get('doctrine')->getRepository(CampaignType::class)->findBy([]);
         return $this->view([
@@ -313,8 +321,8 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $currentUid = $request->get('uid');
+        $member = $this->getMemberByUid($currentUid);
 
         $em = $this->getDoctrine()->getManager();
         $columns = $em->getClassMetadata(Campaign::class)->getColumnNames(); //Я не знаю, как типы полей узнать
@@ -336,8 +344,7 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $member = $this->getMemberByUid($request->get('uid'));
 
         $name = $request->get('name');
         if ($name === null) {
@@ -371,7 +378,7 @@ class ApiAdminController extends RestController
                 'id' => $campaign->getId(),
                 'status' => $campaign->getCampaignType()->getStatus()
             ],
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
+            'uid' => $this->generateAndStoreNewUid($member)
         ], 200);
     }
 
@@ -384,8 +391,8 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $currentUid = $request->get('uid');
+        $this->getMemberByUid($currentUid);
 
         $campaignId = $request->get('campaign_id');
         if ($campaignId === null) {
@@ -416,8 +423,7 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $member = $this->getMemberByUid($request->get('uid'));
 
         $campaignId = $request->get('campaign_id');
         if ($campaignId === null) {
@@ -441,7 +447,7 @@ class ApiAdminController extends RestController
         $em->flush();
 
         return $this->view([
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
+            'uid' => $this->generateAndStoreNewUid($member)
         ], 200);
     }
 
@@ -494,8 +500,7 @@ class ApiAdminController extends RestController
     {
         $this->checkSum($request);
 
-        $currentToken = $request->get('token');
-        $member = $this->getMemberByToken($currentToken);
+        $member = $this->getMemberByUid($request->get('uid'));
 
         $campaignId = $request->get('campaign_id');
         if ($campaignId === null) {
@@ -519,7 +524,7 @@ class ApiAdminController extends RestController
         $em->flush();
 
         return $this->view([
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
+            'uid' => $this->generateAndStoreNewUid($member)
         ], 200);
     }
 

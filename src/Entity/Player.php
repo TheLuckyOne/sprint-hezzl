@@ -78,7 +78,7 @@ class Player
     private $coins;
 
     /**
-     * @ORM\Column(type="jsonb")
+     * @ORM\Column(type="json_array")
      */
     private $system;
 
@@ -88,7 +88,7 @@ class Player
     private $last_day;
 
     /**
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=32)
      */
     private $uid;
 

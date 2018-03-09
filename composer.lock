@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "fcf35e2fcbcc308a9a72f10d1d0ef845",
-    "content-hash": "07ff5828d7f35e118aec0a4cad3c2209",
+    "hash": "a49f322c9b179b5cb60499509409ebee",
+    "content-hash": "4f9a39b25c1635bb3f3378c4e1b28f5a",
     "packages": [
         {
             "name": "boldtrn/jsonb-bundle",

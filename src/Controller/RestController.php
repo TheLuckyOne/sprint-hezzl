@@ -76,36 +76,54 @@ class RestController extends FOSRestController
     }
 
     /**
-     * @param string $token
+     * @param string $uid
      * @return Member
      */
-    public function getMemberByToken($token) {
-        if ($token === null) {
-            throw new HttpException(400, 'Token is required');
+    public function getMemberByUid($uid) {
+        if ($uid === null) {
+            throw new HttpException(400, 'Uid is required');
         }
 
-        $memberIdFromRedis = $this->container->get('snc_redis.members_tokens')->get($token);
+        $memberIdFromRedis = $this->container->get('snc_redis.members_tokens')->get($uid);
         if ($memberIdFromRedis !== null) {
             $member = $this->container->get('doctrine')->getRepository(Member::class)->find($memberIdFromRedis);
             if ($member !== null) {
                 return $member;
             }
         }
-        throw new HttpException(400, 'Token is not valid');
+        throw new HttpException(400, 'Uid is not valid');
     }
 
     /**
-     * @param Player $player
-     * @param string $oldUid
+     * @param Player|Member $user
      * @return string
      */
-    public function generateAndStoreNewUid(Player $player, $oldUid = null) {
+    public function generateAndStoreNewUid($user) {
+        $uid = $this->generateNewUid($user);
+        $this->storeUid($user, $uid);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($user);
+        $em->flush();
+
+        return $uid;
+    }
+
+    /**
+     * @param Player|Member $user
+     * @return string
+     */
+    public function generateNewUid($user) {
+        $redisStorage = $this->container->get('snc_redis.players_uids');
+        if ($user instanceof Member) {
+            $redisStorage = $this->container->get('snc_redis.members_tokens');
+        }
         try {
+            $oldUid = $user->getUid();
             $uid = md5(random_bytes(20));
             if ($oldUid !== null) {
-                $this->container->get('snc_redis.players_uids')->del([$oldUid]);
+                $redisStorage->del([$oldUid]);
             }
-            $this->container->get('snc_redis.players_uids')->set($uid, $player->getId());
             return $uid;
         } catch (\Exception $e) {
             throw new HttpException(400, 'Cannot generate new uid');
@@ -113,20 +131,16 @@ class RestController extends FOSRestController
     }
 
     /**
-     * @param Member $member
-     * @param string $oldToken
-     * @return string
+     * @param Player|Member $user
+     * @param string $uid
      */
-    public function generateAndStoreNewToken(Member $member, $oldToken = null) {
-        try {
-            $token = md5(random_bytes(20));
-            if ($oldToken !== null) {
-                $this->container->get('snc_redis.members_tokens')->del([$oldToken]);
-            }
-            $this->container->get('snc_redis.members_tokens')->set($token, $member->getId());
-            return $token;
-        } catch (\Exception $e) {
-            throw new HttpException(400, 'Cannot generate new token');
+    public function storeUid($user, $uid) {
+        $redisStorage = $this->container->get('snc_redis.players_uids');
+        if ($user instanceof Member) {
+            $redisStorage = $this->container->get('snc_redis.members_tokens');
         }
+        $redisStorage->set($uid, $user->getId());
+        $user->setUid($uid);
     }
+
 }

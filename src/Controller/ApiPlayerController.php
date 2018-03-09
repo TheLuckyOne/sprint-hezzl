@@ -49,10 +49,14 @@ class ApiPlayerController extends RestController
 
         $player = $serializer->fromArray($playerData, Player::class);
         $player->setCampaign($campaign);
+        $uid = $this->generateNewUid($player);
+        $player->setUid($uid);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($player);
         $em->flush();
+
+        $this->storeUid($player, $uid);
 
         return $this->view($player, 200);
     }
