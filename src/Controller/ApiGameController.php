@@ -82,13 +82,6 @@ class ApiGameController extends RestController
             throw new HttpException(400, 'Login is required');
         }
 
-        $login_type = $request->get('login_type'); //Сам не знаю, зачем этот параметр тут. Но ТЗ есть ТЗ.
-        if ($login_type === null) {
-            throw new HttpException(400, 'Login type is required');
-        }
-
-        //Указывать пароль при авторизации, видимо, тоже не надо.
-
         $player = $this->container->get('doctrine')->getRepository(Player::class)->findBy(['login' => $login, 'campaign' => $campaign->getId()]);
         if ($player === null) {
             $name = $request->get('name');
@@ -152,7 +145,7 @@ class ApiGameController extends RestController
         $this->checkSum($request);
 
         $score = $request->get('score');
-        if (!$score) {
+        if ($score === null) {
             throw new HttpException(400, 'Score is required');
         }
 
@@ -182,7 +175,7 @@ class ApiGameController extends RestController
         $this->checkSum($request);
 
         $coins = $request->get('coins');
-        if (!$coins) {
+        if ($coins === null) {
             throw new HttpException(400, 'Coins is required');
         }
 
@@ -211,7 +204,7 @@ class ApiGameController extends RestController
         $this->checkSum($request);
 
         $system = $request->get('system');
-        if (!$system) {
+        if ($system === null) {
             throw new HttpException(400, 'System is required');
         }
 
@@ -241,7 +234,7 @@ class ApiGameController extends RestController
         $this->checkSum($request);
 
         $count = $request->get('count');
-        if (!$count) {
+        if ($count === null) {
             throw new HttpException(400, 'Count is required');
         }
 

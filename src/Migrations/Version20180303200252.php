@@ -19,11 +19,11 @@ class Version20180303200252 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE campaign_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE campaign_status_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE campaign_type_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE player (id INT NOT NULL, campaign_id INT NOT NULL, login VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, phone VARCHAR(15) NOT NULL, sex BOOLEAN NOT NULL, birthday DATE NOT NULL, score INT NOT NULL DEFAULT 0, coins INT NOT NULL DEFAULT 0, system JSON NOT NULL, last_day TIMESTAMP(0) WITHOUT TIME ZONE, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE player (id INT NOT NULL, campaign_id INT NOT NULL, login VARCHAR(255) NOT NULL, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, phone VARCHAR(15) NOT NULL, sex BOOLEAN NOT NULL, birthday DATE NOT NULL, score INT NOT NULL DEFAULT 0, coins INT NOT NULL DEFAULT 0, system JSONB NOT NULL, last_day TIMESTAMP(0) WITHOUT TIME ZONE, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_98197A65F639F774 ON player (campaign_id)');
         $this->addSql('COMMENT ON COLUMN player.system IS \'(DC2Type:json_array)\'');
         $this->addSql('CREATE TABLE campaign (id INT NOT NULL, member_id INT NOT NULL, campaign_type_id INT NOT NULL, name VARCHAR(255) NOT NULL, custom_setting TEXT NOT NULL, message_end TEXT NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX IDX_1F1512DD9B6B5FBA ON campaign (member_id)');
+        $this->addSql('CREATE INDEX IDX_1F1512DD7597D3FE ON campaign (member_id)');
         $this->addSql('CREATE INDEX IDX_1F1512DD6DF610BF ON campaign (campaign_type_id)');
         $this->addSql('CREATE TABLE campaign_status (id INT NOT NULL, name VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE TABLE campaign_type (id INT NOT NULL, status_id INT NOT NULL, name VARCHAR(255) NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');

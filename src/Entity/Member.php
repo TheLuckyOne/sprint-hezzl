@@ -51,7 +51,7 @@ class Member
     private $password;
 
     /**
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="jsonb")
      */
     private $system_field;
 
@@ -60,6 +60,11 @@ class Member
      * @ORM\JoinColumn(nullable=false)
      */
     private $type;
+
+    /**
+     * @ORM\Column(type="string", length=16)
+     */
+    private $uid;
 
     /**
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
@@ -168,6 +173,22 @@ class Member
     public function setType($type): void
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param string $uid
+     */
+    public function setUid($uid): void
+    {
+        $this->uid = $uid;
     }
 
     /**

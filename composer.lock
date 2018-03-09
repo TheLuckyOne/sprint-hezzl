@@ -4,9 +4,61 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d2d14b32d373cf797bb6ddc53374333d",
-    "content-hash": "61cfbb78ce77c8c4dd88ad974328aa25",
+    "hash": "fcf35e2fcbcc308a9a72f10d1d0ef845",
+    "content-hash": "07ff5828d7f35e118aec0a4cad3c2209",
     "packages": [
+        {
+            "name": "boldtrn/jsonb-bundle",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/boldtrn/JsonbBundle.git",
+                "reference": "df766567ea7092c860485f46e2c7659e082e2c73"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/boldtrn/JsonbBundle/zipball/df766567ea7092c860485f46e2c7659e082e2c73",
+                "reference": "df766567ea7092c860485f46e2c7659e082e2c73",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "~2.4",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "doctrine/orm": ">2.4,<2.6",
+                "phpunit/phpunit": "~4.2"
+            },
+            "suggest": {
+                "doctrine/orm": "To use DQL functions"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Boldtrn\\JsonbBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Robin Boldt",
+                    "email": "boldtrn@gmail.com"
+                }
+            ],
+            "description": "A library adding the support for JSONB columns of PostgreSQL to Doctrine.",
+            "homepage": "https://github.com/boldtrn/JsonbBundle",
+            "keywords": [
+                "bundle",
+                "doctrine",
+                "jsonb",
+                "postgresql",
+                "symfony"
+            ],
+            "time": "2015-10-22 19:05:50"
+        },
         {
             "name": "doctrine/annotations",
             "version": "v1.6.0",

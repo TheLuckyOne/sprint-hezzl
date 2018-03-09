@@ -78,7 +78,7 @@ class Player
     private $coins;
 
     /**
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="jsonb")
      */
     private $system;
 
@@ -86,6 +86,11 @@ class Player
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $last_day;
+
+    /**
+     * @ORM\Column(type="string", length=16)
+     */
+    private $uid;
 
     /**
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
@@ -282,6 +287,22 @@ class Player
     public function setLastDay($last_day): void
     {
         $this->last_day = $last_day;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUid()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @param string $uid
+     */
+    public function setUid($uid): void
+    {
+        $this->uid = $uid;
     }
 
     /**
