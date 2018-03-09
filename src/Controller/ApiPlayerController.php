@@ -4,6 +4,12 @@
  * User: daemon
  * Date: 04.03.18
  * Time: 22:43
+ *
+ * Author: Dmitry Malakhov (abr_mail@mail.ru)
+ * Prohibited for commercial use without the prior written consent of author
+ *
+ * Автор: Дмитрий Малахов (abr_mail@mail.ru)
+ * Запрещено использование в коммерческих целях без письменного разрешения автора
  */
 
 namespace App\Controller;
