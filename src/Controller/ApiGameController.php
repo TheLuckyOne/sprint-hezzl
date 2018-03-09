@@ -64,7 +64,6 @@ class ApiGameController extends RestController
                 'reg_date' => $player->getCreatedAt(),
                 'last_day' => $player->getLastDay()
             ],
-            'uid' => $this->generateAndStoreNewUid($player, $currentUid),
         ], 200);    }
 
     /**
@@ -258,7 +257,6 @@ class ApiGameController extends RestController
             'data' => [
                 'top' => $top_result
             ],
-            'uid' => $this->generateAndStoreNewUid($player, $currentUid)
         ], 200);
     }
 

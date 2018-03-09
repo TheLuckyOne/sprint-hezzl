@@ -43,7 +43,6 @@ class ApiAdminController extends RestController
                 'name' => $member->getName(),
                 'email' => $member->getEmail()
             ],
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
         ], 200);
     }
 
@@ -142,12 +141,11 @@ class ApiAdminController extends RestController
                 'name' => $member->getName(),
                 'system_field' => $member->getSystemField()
             ],
-            'token' => $this->generateAndStoreNewToken($member)
         ], 200);
     }
 
     /**
-     * @Route("/api/admin/unlock_screen", name="api_admin_unlock_screen", methods={"GET"}) //Хз, что за метод и что от него требуется
+     * @Route("/api/admin/unlock_screen", name="api_admin_unlock_screen", methods={"GET"}) //Хз, чем отличается от refresh_token
      * @param Request $request
      * @return \FOS\RestBundle\View\View
      */
@@ -206,7 +204,6 @@ class ApiAdminController extends RestController
                 'total' => count($campaigns),
                 'players' => count($players)
             ],
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
         ], 200);
     }
 
@@ -231,7 +228,6 @@ class ApiAdminController extends RestController
                 'total' => count($campaigns),
             ],
             'fields' => $columns,
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
         ], 200);
     }
 
@@ -284,7 +280,6 @@ class ApiAdminController extends RestController
             'data' => [
 
             ],
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
         ], 200);*/ //Нафиг... Сложно
     }
 
@@ -306,7 +301,6 @@ class ApiAdminController extends RestController
                 'total' => count($campaignTypes),
             ],
             'data' => $campaignTypes,
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
         ], 200);
     }
 
@@ -330,7 +324,6 @@ class ApiAdminController extends RestController
                 'total' => count($columns),
             ],
             'data' => $columns,
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
         ], 200);
     }
 
@@ -411,7 +404,6 @@ class ApiAdminController extends RestController
                 'custom_setting' => $campaign->getCustomSetting(),
                 'status' => $campaign->getCampaignType()->getStatus()
             ],
-            'token' => $this->generateAndStoreNewToken($member, $currentToken)
         ], 200);
     }
 
