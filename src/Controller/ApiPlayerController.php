@@ -27,13 +27,13 @@ class ApiPlayerController extends RestController
     {
         $id = $request->get('id');
         if ($id === null) {
-            throw new HttpException(400, 'Id is required');
+            throw new HttpException(400, ['message' => 'Id is required', 'code' => 6]);
         }
 
         $player = $this->container->get('doctrine')->getRepository(Player::class)->find($id);
 
         if ($player === null) {
-            throw new HttpException(400, 'Player not found');
+            throw new HttpException(400, ['message' => 'Player not found', 'code' => 7]);
         }
 
         return $this->view($player, 200);

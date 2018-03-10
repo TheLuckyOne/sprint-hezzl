@@ -27,13 +27,13 @@ class ApiMemberController extends RestController
     {
         $id = $request->get('id');
         if ($id === null) {
-            throw new HttpException(400, 'Id is required');
+            throw new HttpException(400, ['message' => 'Id is required', 'code' => 6]);
         }
 
         $member = $this->container->get('doctrine')->getRepository(Member::class)->find($id);
 
         if ($member === null) {
-            throw new HttpException(400, 'Member not found');
+            throw new HttpException(400, ['message' => 'Member not found', 'code' => 8]);
         }
 
         return $this->view($member, 200);

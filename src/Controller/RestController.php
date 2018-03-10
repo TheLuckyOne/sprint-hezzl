@@ -32,7 +32,7 @@ class RestController extends FOSRestController
         //TODO
         /*$checksum = $request->get('checksum');
         if ($checksum === null) {
-            throw new HttpException(400, 'Checksum is failed');
+            throw new HttpException(400, ['message' => 'Checksum is failed', 'code' => ]);
         }*/
 
         //throw new HttpException(400,'Checksum is failed');
@@ -45,12 +45,12 @@ class RestController extends FOSRestController
     public function extractCampaign(Request $request) {
         $campaign_id = $request->get('campaign_id');
         if ($campaign_id === null) {
-            throw new HttpException(400, 'Campaign id is required');
+            throw new HttpException(400, ['message' => 'Campaign id is required', 'code' => 1]);
         }
 
         $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($campaign_id);
         if ($campaign === null) {
-            throw new HttpException(400, 'Campaign not found');
+            throw new HttpException(400, ['message' => 'Campaign not found', 'code' => 2]);
         }
 
         return $campaign;
@@ -62,7 +62,7 @@ class RestController extends FOSRestController
      */
     public function getPlayerByUid($uid) {
         if ($uid === null) {
-            throw new HttpException(400, 'Uid is required');
+            throw new HttpException(400, ['message' => 'Uid is required', 'code' => 3]);
         }
 
         $playerIdFromRedis = $this->container->get('snc_redis.players_uids')->get($uid);
@@ -72,7 +72,7 @@ class RestController extends FOSRestController
                 return $player;
             }
         }
-        throw new HttpException(400, 'Uid is not valid');
+        throw new HttpException(400, ['message' => 'Uid is not valid', 'code' => 4]);
     }
 
     /**
@@ -81,7 +81,7 @@ class RestController extends FOSRestController
      */
     public function getMemberByUid($uid) {
         if ($uid === null) {
-            throw new HttpException(400, 'Uid is required');
+            throw new HttpException(400, ['message' => 'Uid is required', 'code' => 3]);
         }
 
         $memberIdFromRedis = $this->container->get('snc_redis.members_tokens')->get($uid);
@@ -91,7 +91,7 @@ class RestController extends FOSRestController
                 return $member;
             }
         }
-        throw new HttpException(400, 'Uid is not valid');
+        throw new HttpException(400, ['message' => 'Uid is not valid', 'code' => 4]);
     }
 
     /**
@@ -126,7 +126,7 @@ class RestController extends FOSRestController
             }
             return $uid;
         } catch (\Exception $e) {
-            throw new HttpException(400, 'Cannot generate new uid');
+            throw new HttpException(400, ['message' => 'Cannot generate new uid', 'code' => 5]);
         }
     }
 

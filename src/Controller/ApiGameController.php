@@ -79,29 +79,29 @@ class ApiGameController extends RestController
 
         $login = $request->get('login');
         if ($login === null) {
-            throw new HttpException(400, 'Login is required');
+            throw new HttpException(400, ['message' => 'Login is required', 'code' => 9]);
         }
 
         $player = $this->container->get('doctrine')->getRepository(Player::class)->findBy(['login' => $login, 'campaign' => $campaign->getId()]);
         if (count($player) == 0) {
             $name = $request->get('name');
             if ($name === null) {
-                throw new HttpException(400, 'Name is required');
+                throw new HttpException(400, ['message' => 'Name is required', 'code' => 10]);
             }
 
             $email = $request->get('email');
             if ($email === null) {
-                throw new HttpException(400, 'Email is required');
+                throw new HttpException(400, ['message' => 'Email is required', 'code' => 11]);
             }
 
             $phone = $request->get('phone');
             if ($phone === null) {
-                throw new HttpException(400, 'Phone is required');
+                throw new HttpException(400, ['message' => 'Phone is required', 'code' => 12]);
             }
 
             $sex = $request->get('sex');
             if ($sex === null) {
-                throw new HttpException(400, 'Sex is required');
+                throw new HttpException(400, ['message' => 'Sex is required', 'code' => 13]);
             }
 
             $player = new Player();
@@ -152,7 +152,7 @@ class ApiGameController extends RestController
 
         $score = $request->get('score');
         if ($score === null) {
-            throw new HttpException(400, 'Score is required');
+            throw new HttpException(400, ['message' => 'Score is required', 'code' => 14]);
         }
 
         $player = $this->getPlayerByUid($request->get('uid'));
@@ -181,7 +181,7 @@ class ApiGameController extends RestController
 
         $coins = $request->get('coins');
         if ($coins === null) {
-            throw new HttpException(400, 'Coins is required');
+            throw new HttpException(400, ['message' => 'Coins is required', 'code' => 15]);
         }
 
         $player = $this->getPlayerByUid($request->get('uid'));
@@ -209,7 +209,7 @@ class ApiGameController extends RestController
 
         $system = $request->get('system');
         if ($system === null) {
-            throw new HttpException(400, 'System is required');
+            throw new HttpException(400, ['message' => 'System is required', 'code' => 16]);
         }
 
         $player = $this->getPlayerByUid($request->get('uid'));
@@ -238,7 +238,7 @@ class ApiGameController extends RestController
 
         $count = $request->get('count');
         if ($count === null) {
-            throw new HttpException(400, 'Count is required');
+            throw new HttpException(400, ['message' => 'Count is required', 'code' => 17]);
         }
 
         $currentUid = $request->get('uid');

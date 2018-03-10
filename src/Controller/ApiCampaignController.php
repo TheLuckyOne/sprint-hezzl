@@ -27,13 +27,13 @@ class ApiCampaignController extends RestController
     {
         $id = $request->get('id');
         if ($id === null) {
-            throw new HttpException(400, 'Id is required');
+            throw new HttpException(400, ['message' => 'Id is required', 'code' => 6]);
         }
 
         $campaign = $this->container->get('doctrine')->getRepository(Campaign::class)->find($id);
 
         if ($campaign === null) {
-            throw new HttpException(400, 'Campaign not found');
+            throw new HttpException(400, ['message' => 'Campaign not found', 'code' => 2]);
         }
 
         return $this->view($campaign, 200);
