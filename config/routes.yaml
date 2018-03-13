@@ -1,3 +1,39 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+rest_campaign:
+    type: rest
+    resource: 'App\Controller\ApiCampaignController'
+    prefix:   /api
+    methods: [GET, POST, PUT]
+
+rest_campaign_type:
+    type: rest
+    resource: 'App\Controller\ApiCampaignTypeController'
+    prefix:   /api
+    methods: [GET, POST, PUT]
+
+rest_campaign_status:
+    type: rest
+    resource: 'App\Controller\ApiCampaignStatusController'
+    prefix:   /api
+    methods: [GET, POST, PUT]
+
+rest_members:
+    type: rest
+    resource: 'App\Controller\ApiMemberController'
+    prefix:   /api
+    methods: [GET, POST, PUT]
+
+rest_members_type:
+    type: rest
+    resource: 'App\Controller\ApiMemberTypeController'
+    prefix:   /api
+    methods: [GET, POST, PUT]
+
+rest_players_type:
+    type: rest
+    resource: 'App\Controller\ApiPlayerController'
+    prefix:   /api
+    methods: [GET, POST, PUT]

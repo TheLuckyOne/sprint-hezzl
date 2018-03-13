@@ -1,0 +1,17 @@
+App\Entity\Member:
+    exclusion_policy: ALL
+    properties:
+        name:
+            expose: true
+        email:
+            expose: true
+        phone:
+            expose: true
+        password:
+            expose: true
+        system_field:
+            expose: true
+        type:
+            expose: true
+        created_at:
+            expose: true

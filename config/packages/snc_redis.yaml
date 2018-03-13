@@ -1,0 +1,10 @@
+snc_redis:
+    clients:
+        players_uids:
+            type: predis
+            alias: players_uids
+            dsn: "%env(REDIS_URL)%"
+        players_operations_tokens:
+            type: predis
+            alias: members_tokens
+            dsn: "%env(REDIS_URL_PLAYER_TOKENS)%"

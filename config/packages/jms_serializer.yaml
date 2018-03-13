@@ -1,0 +1,14 @@
+jms_serializer:
+    visitors:
+        xml:
+            format_output: '%kernel.debug%'
+    metadata:
+        cache: file
+        debug: "%kernel.debug%"
+        file_cache:
+            dir: "%kernel.cache_dir%/serializer"
+        directories:
+            App:
+                namespace_prefix: App
+                path: "%kernel.project_dir%/config/serializer/App"
+        auto_detection: true
